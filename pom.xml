@@ -40,6 +40,14 @@
 			<name>Scala-tools Maven2 Repository</name>
 			<url>http://scala-tools.org/repo-releases</url>
 		</repository>
+		<repository>
+			<id>StreamDataStructureLibrary-mvn-repo</id>
+			<url>https://raw.github.com/rohit13k/StreamDataStructureLibrary/mvn-repo/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -50,11 +58,9 @@
 	</pluginRepositories>
 	<dependencies>
 		<dependency>
-			<groupId>SDSLib</groupId>
-			<artifactId>com.SDSLib</artifactId>
-			<version>0.0.1</version>
-			<scope>system</scope>
-			<systemPath>C:\Users\Rohit\scalaworkspace\StreamDataStructureLibrary\target\StreamDataStructureLibrary-0.0.1-SNAPSHOT.jar</systemPath>
+			<groupId>org.ulb</groupId>
+			<artifactId>SDSLib</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>
