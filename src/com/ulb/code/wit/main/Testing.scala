@@ -1,4 +1,5 @@
 package com.ulb.code.wit.main
+import scala.util.control._
 
 import java.io.{ File, FileWriter, BufferedWriter }
 import java.util.Date
@@ -33,10 +34,33 @@ object Testing {
   //    val folder = "/Users/rk/Documents/phd/testdata/"
 
   def main(args: Array[String]) {
-        findCommonKeys(folder + "output//keys//" + filename + "_1_10.keys", folder + "output//keys//" + filename + "_10_10.keys")
+    
+    val files = Array("Gowalla", "foursquare", "BrightKi")
+
+    val window = Array(36000, 72000, 180000);
+    val f = Array(2, 5, 10, 20);
+    for (n <- 0 to files.length - 1) {
+      println(files(n))
+      for (m <- 0 to window.length - 1) {
+        println(window(m))
+        for (i <- 0 to f.length - 1) {
+          for (j <- i + 1 to f.length - 1) {
+            val firstFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(i) + "_s100.keys"
+            val secondFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(j) + "_s100.keys"
+
+            print(f(i) + "," + f(j) + ",")
+            findCommonKeys(firstFile, secondFile, 10)
+            println
+          }
+        }
+      }
+    }
+    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
+     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
+   findCommonKeys(firstFile, secondFile, 10)
     //   convertfile(datafile)
-//        test
-//    check
+    //        test
+    //    check
     //generateKey
     // parseResult("C://phd//testdata//runTimeForC.txt")
     //    testReverse
@@ -77,16 +101,29 @@ object Testing {
       }
     }
   }
-  def findCommonKeys(file1: String, file2: String) {
+  def findCommonKeys(file1: String, file2: String, k: Int) {
     var k1: HashSet[String] = HashSet.empty
     var k2: HashSet[String] = HashSet.empty
-    for (line <- Source.fromFile(file1).getLines()) {
-      k1.add(line)
+    var count = 0;
+    val loop = new Breaks;
+    loop.breakable {
+      for (line <- Source.fromFile(file1).getLines()) {
+        k1.add(line)
+        count = count + 1;
+        if (count == k)
+          loop.break()
+      }
     }
-    for (line <- Source.fromFile(file2).getLines()) {
-      k2.add(line)
+    count = 0
+    loop.breakable {
+      for (line <- Source.fromFile(file2).getLines()) {
+        k2.add(line)
+        count = count + 1;
+        if (count == k)
+          loop.break()
+      }
     }
-    println(k1.intersect(k2).size)
+    print(k1.intersect(k2).size)
 
   }
 
@@ -201,7 +238,7 @@ object Testing {
     val seeds = 10
     println("seeds: " + seeds)
     for (i <- 0 to window.length - 1) {
-      val isexact = new InfluenceSetApprox(window(i),number_of_buckets, datafile)
+      val isexact = new InfluenceSetApprox(window(i), number_of_buckets, datafile)
       isexact.compute(new StringBuilder)
 
       for (k <- 0 to window.length - 1) {
