@@ -91,4 +91,18 @@ object FilterData {
     println(k1.intersect(k2).size)
 
   }
+  def dividefile(){
+    val file = "twitter_Punjab13-14"
+    val f = new File(folder + file + ".txt")
+
+    val bw = new BufferedWriter(new FileWriter(f))
+    for (line <- Source.fromFile(folder + file + ".csv").getLines()) {
+      val temp = line.split(",");
+      
+      bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
+
+    }
+    bw.close
+    println("done")
+  }
 }
