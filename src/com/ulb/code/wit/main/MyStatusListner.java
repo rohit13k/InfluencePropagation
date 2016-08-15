@@ -54,15 +54,17 @@ public class MyStatusListner implements StatusListener {
 			String line = (temp.getUser().getId() + ","
 					+ status.getUser().getId() + ","
 					+ status.getCreatedAt().getTime() + "\n");
-			System.out.print(line);
+			//System.out.print(line);
 			count++;
 			if (sb != null) {
 				sb.append(line);
 			} else {
 				try {
 					wr.write(line);
-					if (count % 100 == 0)
+					if (count % 100 == 0){
 						wr.flush();
+						System.out.println(count);
+					}
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -48,6 +48,10 @@
 				<updatePolicy>always</updatePolicy>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>SparkPackagesRepo</id>
+			<url>http://dl.bintray.com/spark-packages/maven</url>
+		</repository>
 	</repositories>
 	<pluginRepositories>
 		<pluginRepository>
@@ -72,5 +76,19 @@
 			<artifactId>twitter4j-stream</artifactId>
 			<version>4.0.4</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_2.10</artifactId>
+			<version>2.0.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-graphx_2.10</artifactId>
+			<version>2.0.0</version>
+			<optional>true</optional>
+		</dependency>
+
+
 	</dependencies>
 </project>

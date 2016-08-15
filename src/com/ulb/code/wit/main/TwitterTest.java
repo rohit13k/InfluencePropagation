@@ -16,7 +16,8 @@ public class TwitterTest {
 	public static void main(String[] args) throws TwitterException, IOException {
 		StringBuilder sb = new StringBuilder();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream("D:\\dataset\\twitterEuro2016.csv"), "utf-8"));
+				new FileOutputStream("C:\\data\\dataset\\twitter_rio2016_15.csv"),
+				"utf-8"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
 				.setOAuthConsumerKey("kAqpUreGsJ9pwISo0QzLKFanw")
@@ -34,14 +35,17 @@ public class TwitterTest {
 			TwitterStream twitterStream = new TwitterStreamFactory(cb.build())
 					.getInstance();
 			FilterQuery fq = new FilterQuery();
-			String keywords[] = { "Euro2016","#Euro2016" };
-
+			// String keywords[] = {
+			// "BigData","NoSQL","datascience","No SQL","nosql","bigdata","datamining"
+			// };
+			//String keywords[] = { "punjab" ,"UdtaPunjab","UdtaPunjabVerdict"};
+			String keywords[] = { "#rio2016" };
 			fq.track(keywords);
 
 			twitterStream.addListener(listen);
 			twitterStream.filter(fq);
 		} finally {
-			
+
 		}
 	}
 }

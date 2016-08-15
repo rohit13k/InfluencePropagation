@@ -17,7 +17,7 @@ object Test {
   def main(args: Array[String]): Unit =
     {
       var seed = 50
-      var file = "prosper-loans"
+      var file = "twitter_Punjab13-14"
       var folder = "C:\\phd\\testdata\\"
       var iFile = folder + "input\\" + file + ".txt"
       var oFile = folder + "metis\\" + file + ".gr"
@@ -26,8 +26,8 @@ object Test {
       var keyFile = folder + "metis\\keys\\" + file + "_" + seed + ".keys"
       createDIMACSGraph(iFile, oFile, mappingFile)
       //      println("dimacs graph created")
-      // runSKIM(oFile, resultFile, seed)
-      // regenerateKeyIds(mappingFile, resultFile, keyFile)
+       runSKIM(oFile, resultFile, seed)
+       regenerateKeyIds(mappingFile, resultFile, keyFile)
       //      createStaticFile(iFile, oFile)
 
       //      createStaticFilewithRandomProbability(iFile, oFile, seed)
@@ -141,5 +141,6 @@ object Test {
     bw.close()
 
   }
+  
 
 }
