@@ -14,48 +14,52 @@ import java.util.Date
  */
 object SimulatePropagation {
   val file = Array("dblp_coauthor")
-  val splitter = " "
+  val splitter = ","
   //  val file = Array("slashdot-threads", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply", "dblp_coauthor")
 
   val window = Array(1, 10, 20);
-  val seeds = Array(10, 50, 100)
+  val seeds = Array(50)
   //    val folder = "/Users/rk/Documents/phd/testdata/"
   //  val folder = "C:\\phd\\testdata\\"
-  val folder = "C:\\phd\\testdata\\groundTruth\\"
+  val folder = "C://Users//Rohit//Google Drive//testdata//"
+  val filelist = Array("slashdot-threads", "facebook-wosn-wall", "higgs-activity_time", "dblp_coauthor", "enron", "lkml-reply")
 
   val simulation = 100
   def main(args: Array[String]): Unit =
     {
       // testSimulateWithWindow
       //      testSimulateWithWindowinParrallen()
-      val file = "higgs-activity_Retweet"
-      val iFile = getData(folder + file + ".txt")
-      var result: (Double, Double) = (0.0, 0.0)
-      for (j <- 0 to seeds.length - 1) {
-        println("seeds: " + seeds(j))
-        for (k <- 0 to window.length - 1) {
-          val ts = new Date().getTime
-          print("window, " + window(k))
-          var pageFile = getData(folder + "result\\" + file + "_PageRank_100.txt", seeds(j))
-          result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong)
-          print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+     // val file = "twitter_Punjab_10-12"
+      for (file <- filelist) {
+        val iFile = getData(folder + "input\\"+file+".txt")
+          println(file)
+        var result: (Double, Double) = (0.0, 0.0)
+        for (j <- 0 to seeds.length - 1) {
+          println("seeds: " + seeds(j))
+          for (k <- 0 to window.length - 1) {
+            val ts = new Date().getTime
+            print("window, " + window(k))
+            var pageFile = getData(folder + "groundtruth\\" + file + "_pagerank_50.txt", seeds(j))
+            result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong)
+            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-          var countFile = getData(folder + "result\\" + file + "_outDegree_100.txt", seeds(j))
-          result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong)
-          print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+            var countFile = getData(folder + "groundtruth\\" + file + "_outdegree_50.txt", seeds(j))
+            result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong)
+            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-          var keyFile = getData(folder + "result\\" + file + "_" + window(k) + "_100.keys", seeds(j))
-          //          var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
+                  var keyFile = getData(folder + "groundtruth\\" + file + "_" + window(k) + "_100.keys", seeds(j))
+               //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
+                      result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong)
+                    print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
 
-          result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong)
-          print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
+            println
 
-          println
+            //  println("\n" + "My approach: seeds: " + seeds(j) + " window : " + window(k) + " : mean :: " + result._1 + " standard deviation ::" + result._2)
 
-          //  println("\n" + "My approach: seeds: " + seeds(j) + " window : " + window(k) + " : mean :: " + result._1 + " standard deviation ::" + result._2)
+          }
 
         }
-      }
+     }
     }
   def testSimulateWithWindow() {
 
@@ -179,11 +183,11 @@ object SimulatePropagation {
     var spread = 0.0
     var spreadData: ArrayBuilder[Double] = ArrayBuilder.make()
 
-    var seeds: HashSet[Int] = HashSet.empty
+    var seeds: HashSet[Long] = HashSet.empty
 
     var count = 0;
     for (i <- 0 to keyFile.length - 1) {
-      seeds = seeds.+(keyFile(i).toInt)
+      seeds = seeds.+(keyFile(i).toLong)
     }
 
     var dstart = 0l
@@ -214,11 +218,11 @@ object SimulatePropagation {
     var spread = 0.0
     var spreadData: ArrayBuilder[Double] = ArrayBuilder.make()
 
-    var seeds: HashSet[Int] = HashSet.empty
+    var seeds: HashSet[Long] = HashSet.empty
 
     var count = 0;
     for (i <- 0 to keyFile.length - 1) {
-      seeds = seeds.+(keyFile(i).toInt)
+      seeds = seeds.+(keyFile(i).toLong)
     }
 
     var dstart = 0l
@@ -289,47 +293,47 @@ object SimulatePropagation {
     spread
   }
 
-  def simulateSpreadWithTimeWindow(iFile: Array[String], seeds: HashSet[Int], window: Long): Int = {
+  def simulateSpreadWithTimeWindow(iFile: Array[String], seeds: HashSet[Long], window: Long): Int = {
 
     var line: Array[String] = Array.empty
-    var node: HashMap[Int, (Boolean, Long)] = HashMap.empty
+    var node: HashMap[Long, (Boolean, Long)] = HashMap.empty
     for (i <- 0 to iFile.length - 1) {
       line = iFile(i).split(splitter)
       val etime = line(2).toLong
       //if the nodes are for first time add them in node list with activation as false
-      if (!node.contains(line(0).toInt)) {
-        if (seeds.contains(line(0).toInt)) {
-          node.+=((line(0).toInt, (true, etime)))
+      if (!node.contains(line(0).toLong)) {
+        if (seeds.contains(line(0).toLong)) {
+          node.+=((line(0).toLong, (true, etime)))
 
         } else {
-          node.+=((line(0).toInt, (false, 0)))
+          node.+=((line(0).toLong, (false, 0)))
         }
       } else {
 
         //        if (seeds.contains(line(0).toInt) && (!oldvalue._1)) {
-        if (seeds.contains(line(0).toInt)) {
-          node.update(line(0).toInt, (true, etime))
+        if (seeds.contains(line(0).toLong)) {
+          node.update(line(0).toLong, (true, etime))
 
         }
       }
-      if (!node.contains(line(1).toInt)) {
+      if (!node.contains(line(1).toLong)) {
         //        if (seeds.contains(line(1).toInt)) {
         //          node.+=((line(1).toInt, (true, etime)))
         //
         //        } else {
-        node.+=((line(1).toInt, (false, 0)))
+        node.+=((line(1).toLong, (false, 0)))
         //        }
 
       }
 
       //if first node is active do a coin toss and update the 2nd node id true
-      val oldvalue = node.getOrElse(line(0).toInt, { (false, 0l) })
+      val oldvalue = node.getOrElse(line(0).toLong, { (false, 0l) })
       if (oldvalue._1) {
         if ((etime - oldvalue._2) <= window) {
-          val valu = node.getOrElse(line(1).toInt, { (false, 0l) })
+          val valu = node.getOrElse(line(1).toLong, { (false, 0l) })
           if (oldvalue._2 > valu._2) {
             if (toss == 1) {
-              node.update(line(1).toInt, (true, oldvalue._2))
+              node.update(line(1).toLong, (true, oldvalue._2))
             }
           }
         }

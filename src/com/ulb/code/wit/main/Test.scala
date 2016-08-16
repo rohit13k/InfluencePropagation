@@ -18,7 +18,7 @@ object Test {
     {
       var seed = 50
       var file = "twitter_Punjab13-14"
-      var folder = "C:\\phd\\testdata\\"
+      var folder = "C:\\Users\\Rohit\\Google Drive\\testdata\\"
       var iFile = folder + "input\\" + file + ".txt"
       var oFile = folder + "metis\\" + file + ".gr"
       var mappingFile = folder + "metis\\" + file + ".dat"
@@ -38,14 +38,14 @@ object Test {
   def createDIMACSGraph(iFile: String, oFile: String, mappingFile: String) {
     var line: Array[String] = Array.empty
     var input = Source.fromFile(iFile).getLines()
-    var node = new HashSet[Int]
+    var node = new HashSet[Long]
 
-    var edgelist = new HashSet[(Int, Int)]
+    var edgelist = new HashSet[(Long, Long)]
     while (input.hasNext) {
-      line = input.next().split(",")
-      node.add(line(0).toInt)
-      node.add(line(1).toInt)
-      edgelist.add(line(0).toInt, line(1).toInt)
+      line = input.next().split(" ")
+      node.add(line(0).toLong)
+      node.add(line(1).toLong)
+      edgelist.add(line(0).toLong, line(1).toLong)
 
     }
 
@@ -73,7 +73,7 @@ object Test {
   }
   def regenerateKeyIds(mappingFile: String, result: String, keyFile: String) {
     val is = new ObjectInputStream(new FileInputStream(mappingFile))
-    val obj = is.readObject().asInstanceOf[List[Int]]
+    val obj = is.readObject().asInstanceOf[List[Long]]
     is.close()
     var input = Source.fromFile(result).getLines()
     //skipping 3 lines

@@ -12,6 +12,7 @@ import scala.collection.mutable.HashSet
  */
 object FilterData {
 
+
   val folder = "/Users/rk/Desktop/testdata/input/"
   def main(args: Array[String]): Unit =
     {
@@ -22,6 +23,7 @@ object FilterData {
       for (file <- filelist) {
         dividefile(file)
       }
+
     }
   def fillter() {
 
@@ -39,36 +41,13 @@ object FilterData {
     bw.close
     println("done")
   }
-  def outDegree() {
-
-    val file = "slashdot-threads.txt"
-
-    var retweet: HashMap[String, HashSet[String]] = HashMap.empty
-
-    for (line <- Source.fromFile(folder + file).getLines()) {
-      val temp = line.split(" ");
-
-      retweet.update(temp(0), retweet.getOrElse(temp(0), HashSet.empty).+=(temp(1)))
-
-    }
-
-    val f = new File(folder + "slashdot-threads_outDegree.csv")
-    val bw = new BufferedWriter(new FileWriter(f))
-    val k = retweet.iterator
-    while (k.hasNext) {
-      val temp = k.next()
-      bw.write(temp._1 + "," + temp._2.size + "\n")
-    }
-
-    bw.close
-    println("done")
-  }
+ 
   def converttime() {
     val file = "twitter_Punjab13-14"
-    val f = new File(folder + file + ".txt")
+    val f = new File(folder + "input//"+file + ".txt")
 
     val bw = new BufferedWriter(new FileWriter(f))
-    for (line <- Source.fromFile(folder + file + ".csv").getLines()) {
+    for (line <- Source.fromFile(folder + "input//"+ file + ".csv").getLines()) {
       val temp = line.split(",");
 
       bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
@@ -95,6 +74,7 @@ object FilterData {
     println(k1.intersect(k2).size)
 
   }
+
   def dividefile(file: String) {
 
     val ftraining = new File(folder + file + "_training.txt")
@@ -116,6 +96,7 @@ object FilterData {
       else {
         bwtest.write(line + "\n")
       }
+
 
     }
     bw.close
