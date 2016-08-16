@@ -11,13 +11,13 @@ import scala.collection.mutable.HashSet
  * @author Rohit
  */
 object FilterData {
-    
-  val folder = "C:\\phd\\testdata\\twitterdata\\"
+
+  val folder = "C://Users//Rohit//Google Drive//testdata//"
   def main(args: Array[String]): Unit =
     {
       //findCommonKeys(folder + "result\\higgs-activity_Retweet_RetweetCount_100.txt", folder + "result\\higgs-activity_Retweet_1_100.keys", 100)
-    //  outDegree
-    converttime()
+    //    outDegree
+      converttime()
     }
   def fillter() {
 
@@ -35,38 +35,15 @@ object FilterData {
     bw.close
     println("done")
   }
-  def outDegree() {
-
-    val file = "slashdot-threads.txt"
-
-    var retweet: HashMap[String, HashSet[String]] = HashMap.empty
-
-    for (line <- Source.fromFile(folder + file).getLines()) {
-      val temp = line.split(" ");
-
-      retweet.update(temp(0), retweet.getOrElse(temp(0), HashSet.empty).+=(temp(1)))
-
-    }
-
-    val f = new File(folder + "slashdot-threads_outDegree.csv")
-    val bw = new BufferedWriter(new FileWriter(f))
-    val k = retweet.iterator
-    while (k.hasNext) {
-      val temp = k.next()
-      bw.write(temp._1 + "," + temp._2.size + "\n")
-    }
-
-    bw.close
-    println("done")
-  }
+ 
   def converttime() {
     val file = "twitter_Punjab13-14"
-    val f = new File(folder + file + ".txt")
+    val f = new File(folder + "input//"+file + ".txt")
 
     val bw = new BufferedWriter(new FileWriter(f))
-    for (line <- Source.fromFile(folder + file + ".csv").getLines()) {
+    for (line <- Source.fromFile(folder + "input//"+ file + ".csv").getLines()) {
       val temp = line.split(",");
-      
+
       bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
 
     }
@@ -91,14 +68,14 @@ object FilterData {
     println(k1.intersect(k2).size)
 
   }
-  def dividefile(){
+  def dividefile() {
     val file = "twitter_Punjab13-14"
     val f = new File(folder + file + ".txt")
 
     val bw = new BufferedWriter(new FileWriter(f))
     for (line <- Source.fromFile(folder + file + ".csv").getLines()) {
       val temp = line.split(",");
-      
+
       bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
 
     }
