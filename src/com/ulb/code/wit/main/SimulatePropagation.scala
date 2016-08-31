@@ -14,43 +14,56 @@ import java.util.Date
  */
 object SimulatePropagation {
   val file = Array("dblp_coauthor")
-  val splitter = ","
-  //  val file = Array("slashdot-threads", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply", "dblp_coauthor")
+  val splitter = " "
+  //   val file = Array("slashdot-threads", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply", "dblp_coauthor")
 
-  val window = Array(1, 10, 20);
-  val seeds = Array(50)
+  val window = Array(2,4,8,16);
+  val seeds = Array(5,10, 20,50)
   //    val folder = "/Users/rk/Documents/phd/testdata/"
   //  val folder = "C:\\phd\\testdata\\"
   val folder = "C://Users//Rohit//Google Drive//testdata//"
-  val filelist = Array("slashdot-threads", "facebook-wosn-wall", "higgs-activity_time", "dblp_coauthor", "enron", "lkml-reply")
+ // val filelist = Array("slashdot-threads", "facebook-wosn-wall", "higgs-activity_time", "enron", "lkml-reply")
+  //val filelist = Array( "twitter_Punjab13-14")
 
-  val simulation = 100
+  val simulation = 1
   def main(args: Array[String]): Unit =
     {
       // testSimulateWithWindow
       //      testSimulateWithWindowinParrallen()
-     // val file = "twitter_Punjab_10-12"
-      for (file <- filelist) {
-        val iFile = getData(folder + "input\\"+file+".txt")
-          println(file)
+        val file = "twitter_Punjab_10-12"
+     // for (file <- filelist) {
+        val iFile = getData(folder + "input\\twitter_Punjab13-14.txt")
+      //  val trainingFile=getData(folder + "input\\Archive\\" + file + "_training.txt")
+        // val iFile = getData(folder + "input\\" + "twitter_Punjab13-14" + ".txt")
+        println(file)
         var result: (Double, Double) = (0.0, 0.0)
         for (j <- 0 to seeds.length - 1) {
           println("seeds: " + seeds(j))
           for (k <- 0 to window.length - 1) {
             val ts = new Date().getTime
-            print("window, " + window(k))
-            var pageFile = getData(folder + "groundtruth\\" + file + "_pagerank_50.txt", seeds(j))
-            result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong)
+          
+            val realwindow= window(k).toLong*60*60
+            print("window, " + window(k)+":"+realwindow/3600+",")
+            var pageFile = getData(folder + "groundtruth\\" + file + "_pagerank_reversed_50.txt", seeds(j))
+            result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong,realwindow)
             print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-            var countFile = getData(folder + "groundtruth\\" + file + "_outdegree_50.txt", seeds(j))
-            result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong)
-            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+//            var countFile = getData(folder + "groundtruth\\" + file + "_outdegree_50.txt", seeds(j))
+//            result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong,realwindow)
+//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-                  var keyFile = getData(folder + "groundtruth\\" + file + "_" + window(k) + "_100.keys", seeds(j))
-               //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
-                      result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong)
-                    print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
+//            var smartcountFile = getData(folder + "groundtruth\\" + file + "_smartOutDegree_50.csv", seeds(j))
+//            result = simulatewithWindow(smartcountFile, iFile, simulation, window(k).toLong,realwindow)
+//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+//
+//            var skimFile = getData(folder + "groundtruth\\" + file + "_skim_50.keys", seeds(j))
+//            result = simulatewithWindow(skimFile, iFile, simulation, window(k).toLong,realwindow)
+//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+
+//            var keyFile = getData(folder + "groundtruth\\" + file + "_" + window(k) + "_100.keys", seeds(j))
+//            //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
+//            result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong,realwindow)
+//            print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
 
             println
 
@@ -59,7 +72,7 @@ object SimulatePropagation {
           }
 
         }
-     }
+    //  }
     }
   def testSimulateWithWindow() {
 
@@ -180,6 +193,9 @@ object SimulatePropagation {
   //    (mean, sd)
   //  }
   def simulatewithWindow(keyFile: Array[String], iFile: Array[String], simulationCount: Int, windowpercent: Long): (Double, Double) = {
+    simulatewithWindow(keyFile, iFile, simulationCount, windowpercent, 0)
+  }
+  def simulatewithWindow(keyFile: Array[String], iFile: Array[String], simulationCount: Int, windowpercent: Long, realwindow: Long): (Double, Double) = {
     var spread = 0.0
     var spreadData: ArrayBuilder[Double] = ArrayBuilder.make()
 
@@ -192,16 +208,20 @@ object SimulatePropagation {
 
     var dstart = 0l
     var dend = 0l
-
-    for (i <- 0 to iFile.length - 1) {
-      val line = iFile(i).split(splitter)
-      if (count == 0) {
-        dstart = line(2).toLong
+    var window = 0l
+    if (realwindow == 0) {
+      for (i <- 0 to iFile.length - 1) {
+        val line = iFile(i).split(splitter)
+        if (count == 0) {
+          dstart = line(2).toLong
+        }
+        dend = line(2).toLong
+        count = count + 1
       }
-      dend = line(2).toLong
-      count = count + 1
+      window = (dend - dstart) * windowpercent / 100;
+    } else {
+      window = realwindow
     }
-    val window = (dend - dstart) * windowpercent / 100;
 
     for (i <- 0 to simulationCount - 1) {
       val temp = simulateSpreadWithTimeWindow(iFile, seeds, window)
@@ -355,5 +375,21 @@ object SimulatePropagation {
   def toss(): Int = {
     var rand = new Random()
     rand.nextInt(2)
+    1
+  }
+  def getWindow(iFile: Array[String], windowpercent: Long): Long = {
+    var dstart = 0l;
+    var dend = 0l;
+    var count = 0
+    for (i <- 0 to iFile.length - 1) {
+      val line = iFile(i).split(splitter)
+      if (count == 0) {
+        dstart = line(2).toLong
+      }
+      dend = line(2).toLong
+      count = count + 1
+    }
+    (dend - dstart) * windowpercent / 100;
+
   }
 }
