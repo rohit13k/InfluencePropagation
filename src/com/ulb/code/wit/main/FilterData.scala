@@ -12,12 +12,18 @@ import scala.collection.mutable.HashSet
  */
 object FilterData {
 
-  val folder = "C://Users//Rohit//Google Drive//testdata//"
+
+  val folder = "/Users/rk/Desktop/testdata/input/"
   def main(args: Array[String]): Unit =
     {
       //findCommonKeys(folder + "result\\higgs-activity_Retweet_RetweetCount_100.txt", folder + "result\\higgs-activity_Retweet_1_100.keys", 100)
-    //    outDegree
-      converttime()
+      //  outDegree
+      // converttime()
+      val filelist = Array("higgs-activity_time","slashdot-threads","dblp_coauthor","enron","facebook-wosn-wall","lkml-reply")
+      for (file <- filelist) {
+        dividefile(file)
+      }
+
     }
   def fillter() {
 
@@ -68,18 +74,33 @@ object FilterData {
     println(k1.intersect(k2).size)
 
   }
-  def dividefile() {
-    val file = "twitter_Punjab13-14"
-    val f = new File(folder + file + ".txt")
 
-    val bw = new BufferedWriter(new FileWriter(f))
-    for (line <- Source.fromFile(folder + file + ".csv").getLines()) {
-      val temp = line.split(",");
+  def dividefile(file: String) {
 
-      bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
+    val ftraining = new File(folder + file + "_training.txt")
+    val ftest = new File(folder + file + "_test.txt")
+    val bw = new BufferedWriter(new FileWriter(ftraining))
+    val bwtest = new BufferedWriter(new FileWriter(ftest))
+    var count = 0
+    for (line <- Source.fromFile(folder + file + ".txt").getLines()) {
+      count = count + 1
+
+    }
+    val trainingsize: Int = count * 8 / 10
+    count = 0
+    for (line <- Source.fromFile(folder + file + ".txt").getLines()) {
+
+      count = count + 1
+      if (count < trainingsize)
+        bw.write(line + "\n")
+      else {
+        bwtest.write(line + "\n")
+      }
+
 
     }
     bw.close
+    bwtest.close
     println("done")
   }
 }
