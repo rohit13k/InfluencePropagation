@@ -17,7 +17,7 @@ object Testing {
   var window = { 60 * 60 * 24 * 1 }
   var seeds = { 10 }
   val filename = "dblp_coauthor"
-  var folder = "C://phd//testdata//"
+  var folder = "/Users/rk/Google Drive/testdata/groundTruth"
   //  val datafile = folder + "higgs-activity_time.csv"
   var datafile = folder + "input//" + filename + ".txt"
   //  val datafile = folder + "higgs-social_network.txt"
@@ -26,8 +26,8 @@ object Testing {
   var outfile = folder + "output//" + filename
   //  val outfile = folder + "higgs-social_network"
   //  val outfile = folder + "higgs-activity"
-  val file = Array("higgs-activity_time")
-  //  val file = Array("slashdot-threads", "cit-HepPh", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply")
+//  val file = Array("higgs-activity_time")
+    val file = Array("slashdot-threads", "cit-HepPh", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply")
 
   val windows = Array(1, 2, 5, 10);
 
@@ -55,9 +55,9 @@ object Testing {
         }
       }
     }
-    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
-     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
-   findCommonKeys(firstFile, secondFile, 10)
+//    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
+//     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
+//   findCommonKeys(firstFile, secondFile, 10)
     //   convertfile(datafile)
     //        test
     //    check
