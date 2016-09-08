@@ -26,58 +26,60 @@ object Testing {
   var outfile = folder + "output//" + filename
   //  val outfile = folder + "higgs-social_network"
   //  val outfile = folder + "higgs-activity"
-//  val file = Array("higgs-activity_time")
-    val file = Array("slashdot-threads", "cit-HepPh", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply")
+  //  val file = Array("higgs-activity_time")
+  val file = Array("slashdot-threads", "cit-HepPh", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply")
 
   val windows = Array(1, 2, 5, 10);
 
   //    val folder = "/Users/rk/Documents/phd/testdata/"
 
   def main(args: Array[String]) {
-    
-    val files = Array("Gowalla", "foursquare", "BrightKi")
 
-    val window = Array(36000, 72000, 180000);
-    val f = Array(2, 5, 10, 20);
-    for (n <- 0 to files.length - 1) {
-      println(files(n))
-      for (m <- 0 to window.length - 1) {
-        println(window(m))
-        for (i <- 0 to f.length - 1) {
-          for (j <- i + 1 to f.length - 1) {
-            val firstFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(i) + "_s100.keys"
-            val secondFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(j) + "_s100.keys"
-
-            print(f(i) + "," + f(j) + ",")
-            findCommonKeys(firstFile, secondFile, 10)
-            println
-          }
-        }
-      }
-    }
-//    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
-//     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
-//   findCommonKeys(firstFile, secondFile, 10)
-    //   convertfile(datafile)
-    //        test
-    //    check
-    //generateKey
-    // parseResult("C://phd//testdata//runTimeForC.txt")
-    //    testReverse
-    //    CheckGraph(datafile);
+    test
+    //    val files = Array("Gowalla", "foursquare", "BrightKi")
     //
-    //        for (files <- file) {
-    //          // println(files)
-    //          println()
-    //          val key = 100
-    //          for (i <- 0 to windows.length - 1) {
-    //            for (j <- (i + 1) to windows.length - 1) {
-    //              print(windows(i) + ":" + windows(j) + ":")
-    //              findCommonKeys(folder + "outputExact//" + files + "_" + windows(i) + "_"+key+".keys", folder + "outputExact//" + files + "_" + windows(j) + "_"+key+".keys")
-    //            }
+    //    val window = Array(36000, 72000, 180000);
+    //    val f = Array(2, 5, 10, 20);
+    //    for (n <- 0 to files.length - 1) {
+    //      println(files(n))
+    //      for (m <- 0 to window.length - 1) {
+    //        println(window(m))
+    //        for (i <- 0 to f.length - 1) {
+    //          for (j <- i + 1 to f.length - 1) {
+    //            val firstFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(i) + "_s100.keys"
+    //            val secondFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(j) + "_s100.keys"
+    //
+    //            print(f(i) + "," + f(j) + ",")
+    //            findCommonKeys(firstFile, secondFile, 10)
+    //            println
     //          }
-    //    
     //        }
+    //      }
+    //    }
+    //    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
+    //     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
+    //   findCommonKeys(firstFile, secondFile, 10)
+    //    //   convertfile(datafile)
+    //    //        test
+    //    //    check
+    //    //generateKey
+    //    // parseResult("C://phd//testdata//runTimeForC.txt")
+    //    //    testReverse
+    //    //    CheckGraph(datafile);
+    //    //
+    //    //        for (files <- file) {
+    //    //          // println(files)
+    //    //          println()
+    //    //          val key = 100
+    //    //          for (i <- 0 to windows.length - 1) {
+    //    //            for (j <- (i + 1) to windows.length - 1) {
+    //    //              print(windows(i) + ":" + windows(j) + ":")
+    //    //              findCommonKeys(folder + "outputExact//" + files + "_" + windows(i) + "_"+key+".keys", folder + "outputExact//" + files + "_" + windows(j) + "_"+key+".keys")
+    //    //            }
+    //    //          }
+    //    //    
+    //    //        }
+
   }
   def testReverse() {
     for (input <- file) {
@@ -203,7 +205,7 @@ object Testing {
           println("time to find seeds : " + (new Date().getTime - tstart))
           sb.append("time to find seeds : " + (new Date().getTime - tstart) + "\n")
           for (k <- 0 to seeds.length - 1) {
-            val fkey = new File(outfile + "_" + window(j) + "_" + seeds(k) + ".keys")
+            val fkey = new File(outfile + "_" + window(j) + "_" + seeds(k) + "_exact.keys")
 
             val bwkey = new BufferedWriter(new FileWriter(fkey))
             for (m <- 0 to seeds(k).toInt - 1) {

@@ -22,6 +22,7 @@ object Test {
     for (file <- filelist) {
         println(file)
       var seed = 50
+
      // var file = "twitter_rio2016_12"
       var folder = "/Users/rk/Desktop/testdata/"
       var iFile = folder + "input/" + file + ".txt"
@@ -40,7 +41,9 @@ object Test {
   def runSKIM(oFile: String, resultFile: String, seed: Int) {
     print("/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile)
     val result = "/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile !
-  }
+
+    }
+
   def createDIMACSGraph(iFile: String, oFile: String, mappingFile: String) {
     var line: Array[String] = Array.empty
     var input = Source.fromFile(iFile).getLines()
@@ -147,6 +150,5 @@ object Test {
     bw.close()
 
   }
-  
 
 }
