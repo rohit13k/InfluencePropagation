@@ -16,28 +16,34 @@ object Test {
 
   def main(args: Array[String]): Unit =
     {
+     // converttime()
+  //    val filelist = Array("enron_training","facebook-wosn-wall_training","lkml-reply_training","dblp_coauthor_training")
+     val filelist=Array("twitter_rio2016_12") 
+    for (file <- filelist) {
+        println(file)
       var seed = 50
-        var file = "twitter_rio2016_12"
-     // val filelist = Array("slashdot-threads", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply", "dblp_coauthor")
-    //  for (file <- filelist) {
-        println("doing "+file)
-        var folder = "C:\\Users\\Rohit\\Google Drive\\testdata\\"
-        var iFile = folder + "input\\" + file + ".txt"
-        var oFile = folder + "metis\\" + file + ".gr"
-        var mappingFile = folder + "metis\\" + file + ".dat"
-        var resultFile = folder + "metis\\" + file + ".imstats"
-        var keyFile = folder + "metis\\keys\\" + file + "_" + seed + "_skim.keys"
-        createDIMACSGraph(iFile, oFile, mappingFile)
-              println("dimacs graph created")
-      //  runSKIM(oFile, resultFile, seed)
-       // regenerateKeyIds(mappingFile, resultFile, keyFile)
-        //      createStaticFile(iFile, oFile)
-    //  }
+
+     // var file = "twitter_rio2016_12"
+      var folder = "/Users/rk/Desktop/testdata/"
+      var iFile = folder + "input/" + file + ".txt"
+      var oFile = folder + "metis/" + file + ".gr"
+      var mappingFile = folder + "metis/" + file + ".dat"
+      var resultFile = folder + "metis/" + file + ".imstats"
+      var keyFile = folder + "metis/keys/" + file + "_" + seed + ".keys"
+      createDIMACSGraph(iFile, oFile, mappingFile)
+          println("dimacs graph created")
+       runSKIM(oFile, resultFile, seed)
+       regenerateKeyIds(mappingFile, resultFile, keyFile)
+      //      createStaticFile(iFile, oFile)
+      }
       //      createStaticFilewithRandomProbability(iFile, oFile, seed)
     }
   def runSKIM(oFile: String, resultFile: String, seed: Int) {
-    val result = "C://phd//code//ms-skim//bin//RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile !
-  }
+    print("/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile)
+    val result = "/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile !
+
+    }
+
   def createDIMACSGraph(iFile: String, oFile: String, mappingFile: String) {
     var line: Array[String] = Array.empty
     var input = Source.fromFile(iFile).getLines()
