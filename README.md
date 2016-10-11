@@ -1,7 +1,7 @@
 # InfluencePropagation
 To Run the Programe Of finding keys for Influnce Propagation run the InfluencePropagation.jar with the first argument 
 as the path of the config.properties 
-Config file details:
+Config file details:\n
 graphFolder="Path of the folder containing the graph"
 graphFiles="Comma seperated graph file names"
 window="comma seperated window lenght should not be more than 100 or less than 0."
