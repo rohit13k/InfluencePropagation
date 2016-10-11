@@ -1,5 +1,5 @@
 # InfluencePropagation
-To Run the Programe of finding keys for Influnce Propagation run the InfluencePropagation.jar with the first argument 
+To Run the Programe of finding keys for Influnce Propagation run the  com.ulb.code.wit.main.Testing class with the first argument 
 as the path of the config.properties 
 
 Config file details:
