@@ -13,46 +13,48 @@ import java.io.FileWriter
 import java.util.Arrays.ArrayList
 import scala.collection.mutable.ArrayLike
 import scala.collection.mutable.ArrayBuilder
-import scala.util.control.Breaks._
+import scala.util.control._
+import java.util.Date
 /**
  * @author Rohit
  */
 object OutDegree {
-  val folder = "/Users/rk/Desktop/testdata/"
+  val folder = "D:\\phd\\testdata\\"
 
- // val filelist = Array("slashdot-threads_training", "facebook-wosn-wall_training", "higgs-activity_time_training", "enron_training", "lkml-reply_training")
-val filelist = Array("twitter_Punjab_10-12","twitter_rio2016_12")
+  // val filelist = Array("slashdot-threads_training", "facebook-wosn-wall_training", "higgs-activity_time_training", "enron_training", "lkml-reply_training")
+  //val filelist = Array("twitter_Punjab_10-12","twitter_rio2016_12")
+  val filelist = Array("lkml-reply_training", "higgs-activity_time_training", "slashdot-threads_training", "facebook-wosn-wall_training", "enron_training")
 
   val minPartitions = 4
   def main(args: Array[String]) {
-    Logger.getLogger("org").setLevel(Level.OFF)
-    Logger.getLogger("akka").setLevel(Level.OFF)
-    outDegree()
-    println("done outdegree")
+    //    Logger.getLogger("org").setLevel(Level.OFF)
+    //    Logger.getLogger("akka").setLevel(Level.OFF)
+    //    outDegree()
+    //    println("done outdegree")
     smartoutDegree()
     println("done smartoutdegree")
-    val conf = new SparkConf().setAppName("OutDegree").setMaster("local[*]")
-    val sc = new SparkContext(conf)
-    for (f <- filelist) {
-      val path = folder + "groundtruth//" + f + "_outDegree.csv"
-      val seeds = folder + "groundtruth//" + f + "_outdegree_50.txt"
-
-      val input = sc.textFile(path, minPartitions).map(x => x.split(",")).map(x => (x(0), x(1).toDouble))
-
-      val result = input.takeOrdered(50)(Ordering[Double].reverse.on(x => x._2))
-      // println(result.mkString("\n"))
-
-      val fil = new File(seeds)
-
-      val bw = new BufferedWriter(new FileWriter(fil))
-      for (line <- result) {
-
-        bw.write(line._1 + "\n")
-
-      }
-      bw.close
-
-    }
+    //    val conf = new SparkConf().setAppName("OutDegree").setMaster("local[*]")
+    //    val sc = new SparkContext(conf)
+    //    for (f <- filelist) {
+    //      val path = folder + "groundtruth//" + f + "_outDegree.csv"
+    //      val seeds = folder + "groundtruth//" + f + "_outdegree_50.txt"
+    //
+    //      val input = sc.textFile(path, minPartitions).map(x => x.split(",")).map(x => (x(0), x(1).toDouble))
+    //
+    //      val result = input.takeOrdered(50)(Ordering[Double].reverse.on(x => x._2))
+    //      // println(result.mkString("\n"))
+    //
+    //      val fil = new File(seeds)
+    //
+    //      val bw = new BufferedWriter(new FileWriter(fil))
+    //      for (line <- result) {
+    //
+    //        bw.write(line._1 + "\n")
+    //
+    //      }
+    //      bw.close
+    //
+    //    }
   }
   def outDegree() {
 
@@ -82,11 +84,13 @@ val filelist = Array("twitter_Punjab_10-12","twitter_rio2016_12")
   }
   def smartoutDegree() {
     val seedsize = 50
+    var starttime = new Date().getTime
     for (file <- filelist) {
       println(file)
+      starttime = new Date().getTime
       var retweet: HashMap[String, HashSet[String]] = HashMap.empty
 
-      for (line <- Source.fromFile(folder + "//input//" + file + ".txt").getLines()) {
+      for (line <- Source.fromFile(folder + "//input//Archive//" + file + ".txt").getLines()) {
         val temp = line.split(",");
 
         retweet.update(temp(0), retweet.getOrElse(temp(0), HashSet.empty).+=(temp(1)))
@@ -102,40 +106,46 @@ val filelist = Array("twitter_Punjab_10-12","twitter_rio2016_12")
         val temp = k.next()
         data = data.+=((temp._1.toLong, temp._2.size))
       }
-      val result = data.result().sortBy(x => x._2)
+      val result = data.result().sortBy(x => -1 * x._2)
       var selectedseed: HashSet[Long] = HashSet.empty
       var coverednodes: HashSet[String] = HashSet.empty
       selectedseed.add(result(0)._1)
+      println(result(0)._1)
+      bw.write(result(0)._1 + "\n")
       coverednodes = retweet(result(0)._1 + "")
       var maxincrease = Int.MinValue
       var seedcandidate = 0l
       var tempcoverednodes: HashSet[String] = HashSet.empty
+      val loop = new Breaks;
       for (i <- 1 to seedsize - 1) {
         maxincrease = Int.MinValue
         seedcandidate = 0l
-        for (j <- 1 to result.length - 1) {
-          if (!selectedseed.contains(result(j)._1)) {
-            tempcoverednodes = coverednodes.++(retweet(result(j)._1 + ""))
-            if (tempcoverednodes.size - coverednodes.size > maxincrease) {
-              seedcandidate = result(j)._1
-              maxincrease = tempcoverednodes.size - coverednodes.size
-            }
-            if (result(j)._2 < maxincrease) {
-              break()
-            }
+        loop.breakable {
+          for (j <- 1 to result.length - 1) {
+            if (!selectedseed.contains(result(j)._1)) {
+              if (result(j)._2 < maxincrease) {
+                //break
+                loop.break
+              }
 
+              tempcoverednodes = coverednodes union (retweet(result(j)._1 + ""))
+              if (tempcoverednodes.size - coverednodes.size > maxincrease) {
+                seedcandidate = result(j)._1
+                maxincrease = tempcoverednodes.size - coverednodes.size
+              }
+
+            }
           }
         }
-        print(i + ",")
+       // print(i + ",")
         selectedseed.add(seedcandidate)
-        coverednodes = coverednodes.++(retweet(seedcandidate + ""))
+        bw.write(seedcandidate + "\n")
+        coverednodes = coverednodes union (retweet(seedcandidate + ""))
+        //   coverednodes = coverednodes.++(retweet(seedcandidate + ""))
       }
-      val iterat = selectedseed.iterator
-      while (iterat.hasNext) {
-        bw.write(iterat.next() + "\n")
-      }
+
       bw.close
-      println("done " + file)
+      println("done " + file + " :" + (new Date().getTime - starttime))
     }
   }
 }
