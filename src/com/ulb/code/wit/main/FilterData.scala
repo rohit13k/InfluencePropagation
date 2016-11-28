@@ -14,7 +14,7 @@ import scala.collection.mutable.ListBuffer
  */
 object FilterData {
 
-  val folder = "D://dataset//"
+  val folder = "D://phd//testdata//"
   val outfolder = "D://phd//testdata//inputC//"
   def main(args: Array[String]): Unit =
     {
@@ -25,7 +25,8 @@ object FilterData {
       //      for (file <- filelist) {
       //        dividefile(file)
       //      }
-      convertForC("twitter_uselection_mentionincluded_3.csv")
+      //      convertForC("twitter_uselection_mentionincluded_3.csv")
+      converttime()
     }
   def fillter() {
 
@@ -63,14 +64,14 @@ object FilterData {
     println("done")
   }
   def converttime() {
-    val file = "twitter_Punjab13-14"
-    val f = new File(folder + "input//" + file + ".txt")
+    val file = "twitter_uselection_mentionincluded_3"
+    val f = new File(folder + "inputC//" + file + ".txt")
 
     val bw = new BufferedWriter(new FileWriter(f))
-    for (line <- Source.fromFile(folder + "input//" + file + ".csv").getLines()) {
-      val temp = line.split(",");
+    for (line <- Source.fromFile(folder + "inputC//" + file + ".csv").getLines()) {
+      val temp = line.split(" ");
 
-      bw.write(temp(0) + " " + temp(1) + " " + temp(2).toLong / 1000 + "\n")
+      bw.write(temp(0) + " " + temp(1) + " " + temp(3).trim().toLong / 1000 + "\n")
 
     }
     bw.close

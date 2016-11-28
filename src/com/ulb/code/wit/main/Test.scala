@@ -23,18 +23,18 @@ object Test {
     {
       // converttime()
       //    val filelist = Array("enron_training","facebook-wosn-wall_training","lkml-reply_training","dblp_coauthor_training")
-      val filelist = Array("twitter_rio2016_12")
+      val filelist = Array("twitter_uselection_mentionincluded_3")
       for (file <- filelist) {
         println(file)
         var seed = 50
 
         // var file = "twitter_rio2016_12"
-        var folder = "/Users/rk/Desktop/testdata/"
-        var iFile = folder + "input/" + file + ".txt"
-        var oFile = folder + "metis/" + file + ".gr"
-        var mappingFile = folder + "metis/" + file + ".dat"
-        var resultFile = folder + "metis/" + file + ".imstats"
-        var keyFile = folder + "metis/keys/" + file + "_" + seed + ".keys"
+        var folder = "D:\\phd\\testdata\\"
+        var iFile = folder + "inputC\\" + file + ".csv"
+        var oFile = folder + "metis\\" + file + ".gr"
+        var mappingFile = folder + "metis\\" + file + ".dat"
+        var resultFile = folder + "metis\\" + file + ".imstats"
+        var keyFile = folder + "metis\\keys\\" + file + "_" + seed + ".keys"
         createDIMACSGraph(iFile, oFile, mappingFile)
         println("dimacs graph created")
 //        runSKIM(oFile, resultFile, seed)
@@ -56,7 +56,7 @@ object Test {
 
     var edgelist = new HashSet[(Long, Long)]
     while (input.hasNext) {
-      line = input.next().split(",")
+      line = input.next().split(" ")
       node.add(line(0).toLong)
       node.add(line(1).toLong)
       edgelist.add(line(0).toLong, line(1).toLong)
