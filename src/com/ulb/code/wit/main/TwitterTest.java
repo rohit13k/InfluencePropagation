@@ -16,7 +16,7 @@ public class TwitterTest {
 	public static void main(String[] args) throws TwitterException, IOException {
 		StringBuilder sb = new StringBuilder();
 		Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream("C:\\data\\dataset\\twitter_rio2016_15.csv"),
+				new FileOutputStream("C:\\data\\dataset\\twitter_uselection_mentionincluded.csv"),
 				"utf-8"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
@@ -35,11 +35,11 @@ public class TwitterTest {
 			TwitterStream twitterStream = new TwitterStreamFactory(cb.build())
 					.getInstance();
 			FilterQuery fq = new FilterQuery();
-			// String keywords[] = {
-			// "BigData","NoSQL","datascience","No SQL","nosql","bigdata","datamining"
-			// };
-			//String keywords[] = { "punjab" ,"UdtaPunjab","UdtaPunjabVerdict"};
-			String keywords[] = { "#rio2016" };
+			String keywords[] = { "BigData", "NoSQL", "datascience", "No SQL",
+					"nosql", "bigdata", "datamining", "spark", "data",
+					"analytics" };
+//			String keywords[] = { "GoBigWinBig" ,"#GoBigWinBig","#Trump2016","#Clinton","#Election2016"," #Hillary","Election2016","#Trump","#DonaldTrump","Clinton","Hillary","Trump"};
+//			String keywords[] = { "#rio2016" };
 			fq.track(keywords);
 
 			twitterStream.addListener(listen);

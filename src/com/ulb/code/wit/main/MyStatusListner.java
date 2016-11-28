@@ -7,6 +7,7 @@ import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
+import twitter4j.UserMentionEntity;
 
 public class MyStatusListner implements StatusListener {
 
@@ -50,6 +51,29 @@ public class MyStatusListner implements StatusListener {
 	public void onStatus(Status status) {
 		// TODO Auto-generated method stub
 		Status temp = status.getRetweetedStatus();
+		UserMentionEntity[] mention= status.getUserMentionEntities();
+		if(mention.length!=0){
+			for(UserMentionEntity ume:mention){
+				String line = (ume.getId() + ","
+						+ status.getUser().getId() + ","
+						+ status.getCreatedAt().getTime() + "\n");
+				count++;
+				if (sb != null) {
+					sb.append(line);
+				} else {
+					try {
+						wr.write(line);
+						if (count % 100 == 0){
+							wr.flush();
+							System.out.println(count);
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
 		if (temp != null) {
 			String line = (temp.getUser().getId() + ","
 					+ status.getUser().getId() + ","
