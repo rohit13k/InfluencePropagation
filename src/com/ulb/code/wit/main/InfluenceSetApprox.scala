@@ -33,7 +33,7 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
     for (line <- Source.fromFile(datafile).getLines()) {
       //      val temp = line.split(" ")
 
-      temp = line.split(",")
+      temp = line.split(" ")
       //      if (temp.length == 4 & !temp(3).equals("RE")) {
       if (count == 0) {
         dstart = temp(2).toLong
