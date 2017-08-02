@@ -11,30 +11,35 @@ import java.io.{ ObjectOutputStream, ObjectInputStream }
 import java.io.{ FileOutputStream, FileInputStream }
 import sys.process._
 import java.util.Date
+import scala.io.Source
+import scala.collection.mutable.HashMap
+import scala.collection.mutable.HashSet
+import scala.collection.immutable.List
+import scala.collection.mutable.ListBuffer
 
 object Test {
 
   def main(args: Array[String]): Unit =
     {
-     // converttime()
-  //    val filelist = Array("enron_training","facebook-wosn-wall_training","lkml-reply_training","dblp_coauthor_training")
-     val filelist=Array("twitter_rio2016_12") 
-    for (file <- filelist) {
+      // converttime()
+      //    val filelist = Array("enron_training","facebook-wosn-wall_training","lkml-reply_training","dblp_coauthor_training")
+      val filelist = Array("twitter_uselection_mentionincluded_3")
+      for (file <- filelist) {
         println(file)
-      var seed = 50
+        var seed = 50
 
-     // var file = "twitter_rio2016_12"
-      var folder = "/Users/rk/Desktop/testdata/"
-      var iFile = folder + "input/" + file + ".txt"
-      var oFile = folder + "metis/" + file + ".gr"
-      var mappingFile = folder + "metis/" + file + ".dat"
-      var resultFile = folder + "metis/" + file + ".imstats"
-      var keyFile = folder + "metis/keys/" + file + "_" + seed + ".keys"
-      createDIMACSGraph(iFile, oFile, mappingFile)
-          println("dimacs graph created")
-       runSKIM(oFile, resultFile, seed)
-       regenerateKeyIds(mappingFile, resultFile, keyFile)
-      //      createStaticFile(iFile, oFile)
+        // var file = "twitter_rio2016_12"
+        var folder = "D:\\phd\\testdata\\"
+        var iFile = folder + "inputC\\" + file + ".csv"
+        var oFile = folder + "metis\\" + file + ".gr"
+        var mappingFile = folder + "metis\\" + file + ".dat"
+        var resultFile = folder + "metis\\" + file + ".imstats"
+        var keyFile = folder + "metis\\keys\\" + file + "_" + seed + ".keys"
+        createDIMACSGraph(iFile, oFile, mappingFile)
+        println("dimacs graph created")
+//        runSKIM(oFile, resultFile, seed)
+//        regenerateKeyIds(mappingFile, resultFile, keyFile)
+        //      createStaticFile(iFile, oFile)
       }
       //      createStaticFilewithRandomProbability(iFile, oFile, seed)
     }
@@ -42,8 +47,8 @@ object Test {
     print("/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile)
     val result = "/Users/rk/Documents/phd/code/ms-skim/bin/RunSKIM -i " + oFile + " -type dimacs -k 64 -l 64 -N " + seed + " -leval 512 -oc " + resultFile !
 
-    }
-
+  }
+  
   def createDIMACSGraph(iFile: String, oFile: String, mappingFile: String) {
     var line: Array[String] = Array.empty
     var input = Source.fromFile(iFile).getLines()
@@ -51,7 +56,7 @@ object Test {
 
     var edgelist = new HashSet[(Long, Long)]
     while (input.hasNext) {
-      line = input.next().split(",")
+      line = input.next().split(" ")
       node.add(line(0).toLong)
       node.add(line(1).toLong)
       edgelist.add(line(0).toLong, line(1).toLong)

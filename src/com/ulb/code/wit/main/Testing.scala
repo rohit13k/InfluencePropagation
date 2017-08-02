@@ -1,6 +1,5 @@
 package com.ulb.code.wit.main
 import scala.util.control._
-
 import java.io.{ File, FileWriter, BufferedWriter }
 import java.util.Date
 import java.util.Properties
@@ -9,6 +8,7 @@ import scala.io.Source
 import scala.collection.mutable.HashSet
 import scala.collection.mutable.StringBuilder
 import scala.collection.mutable.ArrayBuilder
+import scala.collection.mutable.ListBuffer
 /**
  * @author Rohit
  */
@@ -17,69 +17,48 @@ object Testing {
   var window = { 60 * 60 * 24 * 1 }
   var seeds = { 10 }
   val filename = "dblp_coauthor"
-  var folder = "/Users/rk/Google Drive/testdata/groundTruth"
-  //  val datafile = folder + "higgs-activity_time.csv"
+  var folder = ""
+
   var datafile = folder + "input//" + filename + ".txt"
-  //  val datafile = folder + "higgs-social_network.txt"
-  //    val datafile = folder + "sample.txt"
 
   var outfile = folder + "output//" + filename
-  //  val outfile = folder + "higgs-social_network"
-  //  val outfile = folder + "higgs-activity"
-  //  val file = Array("higgs-activity_time")
+
   val file = Array("slashdot-threads", "cit-HepPh", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply")
 
   val windows = Array(1, 2, 5, 10);
 
-  //    val folder = "/Users/rk/Documents/phd/testdata/"
-
   def main(args: Array[String]) {
 
-    test
-    //    val files = Array("Gowalla", "foursquare", "BrightKi")
-    //
-    //    val window = Array(36000, 72000, 180000);
-    //    val f = Array(2, 5, 10, 20);
-    //    for (n <- 0 to files.length - 1) {
-    //      println(files(n))
-    //      for (m <- 0 to window.length - 1) {
-    //        println(window(m))
-    //        for (i <- 0 to f.length - 1) {
-    //          for (j <- i + 1 to f.length - 1) {
-    //            val firstFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(i) + "_s100.keys"
-    //            val secondFile = "D:\\dataset\\new\\" + files(n) + "\\LBSNData\\" + files(n) + "_w" + window(m) + "_f" + f(j) + "_s100.keys"
-    //
-    //            print(f(i) + "," + f(j) + ",")
-    //            findCommonKeys(firstFile, secondFile, 10)
-    //            println
-    //          }
-    //        }
-    //      }
-    //    }
-    //    val firstFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquare_w36000_f5_s50.keys"
-    //     val secondFile = "D:\\dataset\\new\\NYC\\foursquare\\foursquareWeightedFriend_w10_f5_s50.keys"
-    //   findCommonKeys(firstFile, secondFile, 10)
-    //    //   convertfile(datafile)
-    //    //        test
-    //    //    check
-    //    //generateKey
-    //    // parseResult("C://phd//testdata//runTimeForC.txt")
-    //    //    testReverse
-    //    //    CheckGraph(datafile);
-    //    //
-    //    //        for (files <- file) {
-    //    //          // println(files)
-    //    //          println()
-    //    //          val key = 100
-    //    //          for (i <- 0 to windows.length - 1) {
-    //    //            for (j <- (i + 1) to windows.length - 1) {
-    //    //              print(windows(i) + ":" + windows(j) + ":")
-    //    //              findCommonKeys(folder + "outputExact//" + files + "_" + windows(i) + "_"+key+".keys", folder + "outputExact//" + files + "_" + windows(j) + "_"+key+".keys")
-    //    //            }
-    //    //          }
-    //    //    
-    //    //        }
+    if (args.length == 1) {
+      test(args(0))
+    } else if(args.length==3){
+      println("converting file");
+      convertForC(args(0), args(1), args(2))
+      
+    }else {
+      println("Invalid number of arguments running default file")
+      test("config.properties")
+    }
 
+  }
+  def convertForC(file: String, outfolder: String, folder: String) {
+
+    val f = new File(outfolder + file)
+    val data: ListBuffer[(String, String, String)] = ListBuffer.empty
+    val bw = new BufferedWriter(new FileWriter(f))
+    for (line <- Source.fromFile(folder + file).getLines()) {
+      val temp = line.split(",");
+
+      data.+=((temp(0), temp(1), temp(2)))
+    }
+    val sorteddata = data.sortBy(f => {
+      f._3
+    })
+    for ((a, b, t) <- sorteddata) {
+      bw.write(a + " " + b + " " + " " + t + "\n")
+    }
+    bw.close
+    println("done")
   }
   def testReverse() {
     for (input <- file) {
@@ -129,9 +108,9 @@ object Testing {
 
   }
 
-  def test() {
+  def test(configFile: String) {
     val prop = new Properties();
-    prop.load(new FileInputStream("config.properties"));
+    prop.load(new FileInputStream(configFile));
     folder = prop.getProperty("graphFolder")
     val files = prop.getProperty("graphFiles").split(",")
     val window = prop.getProperty("window").split(",")

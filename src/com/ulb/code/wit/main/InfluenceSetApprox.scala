@@ -33,7 +33,7 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
     for (line <- Source.fromFile(datafile).getLines()) {
       //      val temp = line.split(" ")
 
-      temp = line.split(",")
+      temp = line.split(" ")
       //      if (temp.length == 4 & !temp(3).equals("RE")) {
       if (count == 0) {
         dstart = temp(2).toLong
@@ -45,19 +45,14 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
       count = count + 1
     }
     val window = (dend - dstart) * windowpercent / 100
-    //    System.gc()
- //   println("window : " + window)
-  //  println(dend+"::"+dstart)
+
     var t2 = new Date().getTime
     var time_add = 0l
     var time_union = 0l
- //   println("time to read:" + (t2 - t1))
- //   println("#nodes : " + nodes.size)
- //   println("#edges : " + edges.size)
-    //println("window : " + window)
+
     var edgelength = edges.size
     count = 0
-    //   println("Started: " + new Date)
+
     val starttime = new Date().getTime
     var elem = (0, 0, 0l)
     var S_u: ModifiedHLL = null
@@ -80,34 +75,18 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
         nodes.update(elem._1, S_u)
       }
       count += 1
-      //      if (count % 100000 == 0) {
-      //        print("add : " + time_add + " union: " + time_union)
-      //        println(" done " + count + " edges left " + edges.size + " at " + new Date)
-      //        time_add = 0l
-      //        time_union = 0l;
-      //      }
+
     }
     nodesummary = nodes.map(f => {
 
       (f._1, f._2.convertToHLL())
     })
     val endtime = new Date().getTime
-    println("Time: " + (endtime - starttime))
-    sb.append("Time: " + (endtime - starttime) + "\n")
+    println("Time to find influence: " + (endtime - starttime))
+    sb.append("Time to find influence: " + (endtime - starttime) + "\n")
     nodes.clear()
     edges.clear()
-    //    System.gc()
-    var finalfreeMemory = Runtime.getRuntime.freeMemory()
 
-    println("Memory: " + (Runtime.getRuntime.totalMemory() - finalfreeMemory) / (1024 * 1024))
-    //    val fapprox = new File(outfile + "_approxmhll.csv")
-    //
-    //    val bwapprox = new BufferedWriter(new FileWriter(fapprox))
-    //
-    //    nodes.foreach(x => {
-    //      bwapprox.write(x._1 + "," + x._2.estimate() + "\n")
-    //    })
-    //    bwapprox.close()
   }
 
   def findseeds(seeds: Int): Array[Int] = {
@@ -118,16 +97,7 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
     sortedlist = sortedlist.sortBy(f => { -1 * f._2.estimate() })
     is = sortedlist(0)._2
     result(0) = sortedlist(0)._1
-    //    for (i <- 1 to seeds - 1) {
-    //      var temp = sortedlist
-    //      temp = temp.map(f => {
-    //        f._2.union(is.buckets())
-    //        (f._1, f._2)
-    //      })
-    //      temp = temp.sortBy(f => { -1 * f._2.estimate() })
-    //      is.union(temp(0)._2.buckets())
-    //      result = result + temp(0)._1
-    //    }
+
     var lastposition = 0
     var seed: HyperLogLog = null
     var node: Int = 0
@@ -162,7 +132,7 @@ class InfluenceSetApprox(windowpercent: Double, num_of_buckets: Int, datafile: S
       is.union(seed.buckets())
 
     }
-    // println("last seed node position: " + lastposition)
+
     result
   }
   def findInflunce(seednode: Array[Int]): Int = {

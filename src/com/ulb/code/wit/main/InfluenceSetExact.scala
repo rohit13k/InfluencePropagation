@@ -26,9 +26,9 @@ class InfluenceSetExact(windowpercent: Double, datafile: String) {
     var edges = new Stack[(Int, Int, Long)]
 
     for (line <- Source.fromFile(datafile).getLines()) {
-      //            val temp = line.split(" ")
+
       val temp = line.split(",")
-      //            if (temp.length == 4 & !temp(3).equals("RE")) {
+
       if (count == 0) {
         dstart = temp(2).toLong
       }
@@ -40,14 +40,12 @@ class InfluenceSetExact(windowpercent: Double, datafile: String) {
 
     }
     val window = (dend - dstart) * windowpercent / 100
-    //    System.gc()
 
     val starttime = new Date().getTime
-    //    println("#nodes : " + nodes.size)
-    //    println("#edges : " + edges.size)
+
     var edgelength = edges.size
     count = 0
-    //    println("Started: " + new Date)
+
     var elem = (0, 0, 0l)
     var S_u: HashMap[Int, Long] = null
     var S_v: HashMap[Int, Long] = null
@@ -65,28 +63,22 @@ class InfluenceSetExact(windowpercent: Double, datafile: String) {
         if (elem._1 != elem._2) {
           S_u = add(S_u, (elem._2, elem._3))
           val tstart = new Date().getTime
-          S_u = merge(elem._1,S_u, S_v, elem._3, window)
+          S_u = merge(elem._1, S_u, S_v, elem._3, window)
           timetomerge = timetomerge + (new Date().getTime - tstart)
           nodes.update(elem._1, S_u)
         }
       }
-      //      count += 1
-      //      if (count % 100000 == 0) {
-      //        println(" time to merge: " + timetomerge + " done " + count + " edges left " + edges.size + " at " + new Date)
-      //        timetomerge = 0l
-      //      }
+
     }
 
     nodesummary = nodes.mapValues(f => f.keySet)
     nodes = null
     edges = null
     val endtime = new Date().getTime
-    println("Time: " + (endtime - starttime))
-    sb.append("Time: " + (endtime - starttime) + "\n")
-    //    System.gc()
-    var finalfreeMemory = Runtime.getRuntime.freeMemory()
+    println("Time to find influence : " + (endtime - starttime))
+    sb.append("Timeto find influence : " + (endtime - starttime) + "\n")
 
-    //    println("Memory: " + (Runtime.getRuntime.totalMemory() - finalfreeMemory) / (1024 * 1024))
+    var finalfreeMemory = Runtime.getRuntime.freeMemory()
 
   }
 
@@ -178,7 +170,7 @@ class InfluenceSetExact(windowpercent: Double, datafile: String) {
     var value: (Int, Long) = null
     while (iterator.hasNext) {
       value = iterator.next()
-      if (value != sourcenode) {
+      if (value._1 != sourcenode) {
         if (window == 0 || (value._2 - newTime) <= window) {
           add(S_u, value)
         }

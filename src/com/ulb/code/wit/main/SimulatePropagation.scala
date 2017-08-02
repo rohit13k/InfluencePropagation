@@ -14,56 +14,63 @@ import java.util.Date
  */
 object SimulatePropagation {
   val file = Array("dblp_coauthor")
-  val splitter = " "
-  //   val file = Array("slashdot-threads", "enron", "facebook-wosn-wall", "higgs-activity_time", "lkml-reply", "dblp_coauthor")
+  val splitter = ","
+  //   val file = Array("slashdot-threads", "facebook-wosn-wall", "higgs-activity_time","enron",  "lkml-reply", "dblp_coauthor")
 
-  val window = Array(2,4,8,16);
-  val seeds = Array(5,10, 20,50)
+  val window = Array(1, 20);
+  val seeds = Array(5, 10, 15, 20, 25, 30, 35, 40, 45, 50)
   //    val folder = "/Users/rk/Documents/phd/testdata/"
   //  val folder = "C:\\phd\\testdata\\"
-  val folder = "C://Users//Rohit//Google Drive//testdata//"
- // val filelist = Array("slashdot-threads", "facebook-wosn-wall", "higgs-activity_time", "enron", "lkml-reply")
-  //val filelist = Array( "twitter_Punjab13-14")
+  val folder = "D://phd//testdata//"
+  //val filelist = Array(  "enron")
+   val filelist = Array("facebook-wosn-wall_training", "higgs-activity_time_training","enron_training", "lkml-reply_training")
 
-  val simulation = 1
+  val simulation = 5
   def main(args: Array[String]): Unit =
     {
       // testSimulateWithWindow
       //      testSimulateWithWindowinParrallen()
-        val file = "twitter_Punjab_10-12"
-     // for (file <- filelist) {
-        val iFile = getData(folder + "input\\twitter_Punjab13-14.txt")
-      //  val trainingFile=getData(folder + "input\\Archive\\" + file + "_training.txt")
+      // val file = "twitter_Punjab_10-12"
+      for (file <- filelist) {
+        val iFile = getData(folder + "input\\Archive\\" + file + ".txt")
+        //  val trainingFile=getData(folder + "input\\Archive\\" + file + "_training.txt")
         // val iFile = getData(folder + "input\\" + "twitter_Punjab13-14" + ".txt")
         println(file)
         var result: (Double, Double) = (0.0, 0.0)
-        for (j <- 0 to seeds.length - 1) {
-          println("seeds: " + seeds(j))
-          for (k <- 0 to window.length - 1) {
+        for (k <- 0 to window.length - 1) {
+          val realwindow = 0l
+          println("window, " + window(k) + ":" + realwindow / 3600 + ",")
+          for (j <- 0 to seeds.length - 1) {
+            print("seeds: " + seeds(j) + ",")
+
             val ts = new Date().getTime
-          
-            val realwindow= window(k).toLong*60*60
-            print("window, " + window(k)+":"+realwindow/3600+",")
-            var pageFile = getData(folder + "groundtruth\\" + file + "_pagerank_reversed_50.txt", seeds(j))
-            result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong,realwindow)
+
+            //val realwindow= window(k).toLong*60*60*24
+
+            var pageFile = getData(folder + "groundtruth\\final\\" + file + "_pagerank_reversed_50.txt", seeds(j))
+            result = simulatewithWindow(pageFile, iFile, simulation, window(k).toLong, realwindow)
             print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-//            var countFile = getData(folder + "groundtruth\\" + file + "_outdegree_50.txt", seeds(j))
-//            result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong,realwindow)
-//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+            var countFile = getData(folder + "groundtruth\\" + file + "_outdegree_50.txt", seeds(j))
+            result = simulatewithWindow(countFile, iFile, simulation, window(k).toLong, realwindow)
+            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-//            var smartcountFile = getData(folder + "groundtruth\\" + file + "_smartOutDegree_50.csv", seeds(j))
-//            result = simulatewithWindow(smartcountFile, iFile, simulation, window(k).toLong,realwindow)
-//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
-//
-//            var skimFile = getData(folder + "groundtruth\\" + file + "_skim_50.keys", seeds(j))
-//            result = simulatewithWindow(skimFile, iFile, simulation, window(k).toLong,realwindow)
-//            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+            var smartcountFile = getData(folder + "groundtruth\\" + file + "_smartOutDegree_50.csv", seeds(j))
+            result = simulatewithWindow(smartcountFile, iFile, simulation, window(k).toLong, realwindow)
+            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
 
-//            var keyFile = getData(folder + "groundtruth\\" + file + "_" + window(k) + "_100.keys", seeds(j))
-//            //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
-//            result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong,realwindow)
-//            print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
+            var skimFile = getData(folder + "groundtruth\\" + file + "_50.skim", seeds(j))
+            result = simulatewithWindow(skimFile, iFile, simulation, window(k).toLong, realwindow)
+            print(", mean , " + Math.round(result._1.toDouble) + " ,sd ," + Math.round(result._2))
+
+            var keyFile = getData(folder + "groundtruth\\final\\" + file + "_" + window(k) + "_50.keys", seeds(j))
+            //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
+            result = simulatewithWindow(keyFile, iFile, simulation, window(k).toLong, realwindow)
+            print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
+            var exactkeyFile = getData(folder + "groundtruth\\final\\" + file + "_"  + window(k) + "_50_exact.keys", seeds(j))
+            //       var keyFile = folder + "exactoutput/" + file(i) + "_" + window(k) + "_" + seeds(j) + ".keys"
+            result = simulatewithWindow(exactkeyFile, iFile, simulation, window(k).toLong, realwindow)
+            print(", " + window(k) + "," + Math.round(result._1.toDouble) + "," + Math.round(result._2))
 
             println
 
@@ -72,7 +79,7 @@ object SimulatePropagation {
           }
 
         }
-    //  }
+      }
     }
   def testSimulateWithWindow() {
 
@@ -209,7 +216,7 @@ object SimulatePropagation {
     var dstart = 0l
     var dend = 0l
     var window = 0l
-    if (realwindow == 0) {
+    if (realwindow == 0l) {
       for (i <- 0 to iFile.length - 1) {
         val line = iFile(i).split(splitter)
         if (count == 0) {
@@ -313,8 +320,8 @@ object SimulatePropagation {
     spread
   }
 
-  def simulateSpreadWithTimeWindow(iFile: Array[String], seeds: HashSet[Long], window: Long): Int = {
-
+  def simulateSpreadWithTimeWindow(iFile: Array[String], seed: HashSet[Long], window: Long): Int = {
+    var tempseeds = seed.seq
     var line: Array[String] = Array.empty
     var node: HashMap[Long, (Boolean, Long)] = HashMap.empty
     for (i <- 0 to iFile.length - 1) {
@@ -322,18 +329,18 @@ object SimulatePropagation {
       val etime = line(2).toLong
       //if the nodes are for first time add them in node list with activation as false
       if (!node.contains(line(0).toLong)) {
-        if (seeds.contains(line(0).toLong)) {
+        if (tempseeds.contains(line(0).toLong)) {
           node.+=((line(0).toLong, (true, etime)))
-
+     //     tempseeds = tempseeds.-(line(0).toLong)
         } else {
           node.+=((line(0).toLong, (false, 0)))
         }
       } else {
 
         //        if (seeds.contains(line(0).toInt) && (!oldvalue._1)) {
-        if (seeds.contains(line(0).toLong)) {
+        if (tempseeds.contains(line(0).toLong)) {
           node.update(line(0).toLong, (true, etime))
-
+      //    tempseeds = tempseeds.-(line(0).toLong)
         }
       }
       if (!node.contains(line(1).toLong)) {
@@ -375,7 +382,7 @@ object SimulatePropagation {
   def toss(): Int = {
     var rand = new Random()
     rand.nextInt(2)
-    1
+    
   }
   def getWindow(iFile: Array[String], windowpercent: Long): Long = {
     var dstart = 0l;
