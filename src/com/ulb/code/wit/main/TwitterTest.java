@@ -24,7 +24,12 @@ public class TwitterTest {
 		Writer writer = new BufferedWriter(
 				new OutputStreamWriter(
 						new FileOutputStream(
-								"C:\\data\\dataset\\twitter_uselection_mentionincluded_9thNov.csv"),
+								"D:\\dataset\\backup\\NorthKorea.csv"),
+						"utf-8"));
+		Writer textWriter = new BufferedWriter(
+				new OutputStreamWriter(
+						new FileOutputStream(
+								"D:\\dataset\\backup\\NorthKorea_text.csv"),
 						"utf-8"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
@@ -38,22 +43,22 @@ public class TwitterTest {
 		// TwitterFactory tf = new TwitterFactory(cb.build());
 		// Twitter twitter = tf.getInstance();
 		// Charset charset = Charset.forName("US-ASCII");
-		String file = "C:\\data\\dataset\\backup\\twitter_uselection_mentionincluded_2.txt";
-		BufferedReader br = new BufferedReader(new FileReader(new File(file)));
+//		String file = "D:\\dataset\\backup\\twitter_uselection_mentionincluded_2.txt";
+//		BufferedReader br = new BufferedReader(new FileReader(new File(file)));
 
 		HashSet<Long> users = new HashSet<Long>();
 		String line = null;
 		String[] temp = null;
-		while ((line = br.readLine()) != null) {
-			temp = line.split(",");
-			users.add(Long.parseLong(temp[0]));
-			users.add(Long.parseLong(temp[1]));
-		}
+//		while ((line = br.readLine()) != null) {
+//			temp = line.split(",");
+//			users.add(Long.parseLong(temp[0]));
+//			users.add(Long.parseLong(temp[1]));
+//		}
 		System.out.println(users.size());
-		br.close();
+//		br.close();
 		try {
 			// MyStatusListner listen = new MyStatusListner(sb);
-			MyStatusListner listen = new MyStatusListner(writer, users);
+			MyStatusListner listen = new MyStatusListner(writer, textWriter);
 			TwitterStream twitterStream = new TwitterStreamFactory(cb.build())
 					.getInstance();
 			FilterQuery fq = new FilterQuery();
@@ -61,9 +66,7 @@ public class TwitterTest {
 			// "No SQL",
 			// "nosql", "bigdata", "datamining", "spark", "data",
 			// "analytics" };
-			String keywords[] = { "#Trump2016", "#Clinton", "#Election2016","#USElection2016",
-					" #Hillary", "#Elections2016", "#Trump", "#DonaldTrump","@realDonaldTrump",
-					"Clinton", "Hillary", "Trump" };
+			String keywords[] = { "#NorthKorea", "#GUAM", "#FireAndFury"};
 			// String keywords[] = { "#rio2016" };
 			fq.track(keywords);
 

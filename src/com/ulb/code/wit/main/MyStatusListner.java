@@ -14,6 +14,7 @@ public class MyStatusListner implements StatusListener {
 
 	StringBuilder sb;
 	Writer wr;
+	Writer wrText;
 	int count = 0;
 	HashSet<Long> users = null;
 
@@ -25,7 +26,10 @@ public class MyStatusListner implements StatusListener {
 		this.wr = wr;
 		this.users = users;
 	}
-
+	public MyStatusListner(Writer wr, Writer wrText) {
+		this.wr = wr;
+		this.wrText = wrText;
+	}
 	@Override
 	public void onException(Exception arg0) {
 		// TODO Auto-generated method stub
@@ -55,13 +59,14 @@ public class MyStatusListner implements StatusListener {
 		// TODO Auto-generated method stub
 		Status temp = status.getRetweetedStatus();
 		UserMentionEntity[] mention = status.getUserMentionEntities();
-		if (mention.length != 0) {
+		if (mention.length>0) {
 			for (UserMentionEntity ume : mention) {
-//				if (users.contains(ume.getId())
-//						& users.contains(status.getUser().getId())) {
+				//				if (users.contains(ume.getId())
+				//						& users.contains(status.getUser().getId())) {
 				if(true){
 					String line = (ume.getId() + "," + status.getUser().getId()
-							+ "," + status.getCreatedAt().getTime() + "\n");
+							+ "," + status.getCreatedAt().getTime()/1000 + ",M, "+status.getId()+"\n");
+					String text=status.getId()+","+status.getText().replaceAll("\\s", " ")+"\n";
 					count++;
 					if (sb != null) {
 						sb.append(line);
@@ -76,16 +81,30 @@ public class MyStatusListner implements StatusListener {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						try {
+							if(wrText!=null){
+								wrText.write(text);
+								if (count % 100 == 0) {
+									wrText.flush();
+									System.out.println(count);
+								}
+							}
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
 		} else if (temp != null) {
 			// if (users.contains(temp.getUser().getId())
 			// & users.contains(status.getUser().getId())) {
-				if(true){
+
+			if(status.isRetweet()){
 				String line = (temp.getUser().getId() + ","
 						+ status.getUser().getId() + ","
-						+ status.getCreatedAt().getTime() + "\n");
+						+ status.getCreatedAt().getTime()/1000  + ",R, "+status.getId()+"\n");
+				String text=status.getId()+","+status.getText().replaceAll("\\s", " ")+"\n";
 				// System.out.print(line);
 				count++;
 				if (sb != null) {
@@ -101,6 +120,18 @@ public class MyStatusListner implements StatusListener {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					try {
+						if(wrText!=null){
+							wrText.write(text);
+							if (count % 100 == 0) {
+								wrText.flush();
+								System.out.println(count);
+							}
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -109,8 +140,8 @@ public class MyStatusListner implements StatusListener {
 	@Override
 	public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
 		// TODO Auto-generated method stub
-//		System.out.println("onTrackLimitationNOtice: "
-//				+ numberOfLimitedStatuses);
+		//		System.out.println("onTrackLimitationNOtice: "
+		//				+ numberOfLimitedStatuses);
 
 	}
 
