@@ -24,12 +24,12 @@ public class TwitterTest {
 		Writer writer = new BufferedWriter(
 				new OutputStreamWriter(
 						new FileOutputStream(
-								"D:\\dataset\\backup\\NorthKorea.csv"),
+								"D:\\dataset\\backup\\retweet_14Aug.csv"),
 						"utf-8"));
 		Writer textWriter = new BufferedWriter(
 				new OutputStreamWriter(
 						new FileOutputStream(
-								"D:\\dataset\\backup\\NorthKorea_text.csv"),
+								"D:\\dataset\\backup\\retweet_14Aug_text.csv"),
 						"utf-8"));
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setDebugEnabled(true)
@@ -66,11 +66,12 @@ public class TwitterTest {
 			// "No SQL",
 			// "nosql", "bigdata", "datamining", "spark", "data",
 			// "analytics" };
-			String keywords[] = { "#NorthKorea", "#GUAM", "#FireAndFury"};
+			String keywords[] = { "#NorthKorea", "#GUAM", "#FireAndFury","Trump","US","Korea","Russia"};
 			// String keywords[] = { "#rio2016" };
 			fq.track(keywords);
 
 			twitterStream.addListener(listen);
+			
 			twitterStream.filter(fq);
 		} finally {
 

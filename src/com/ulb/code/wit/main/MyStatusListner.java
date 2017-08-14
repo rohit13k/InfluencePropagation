@@ -15,6 +15,7 @@ public class MyStatusListner implements StatusListener {
 	StringBuilder sb;
 	Writer wr;
 	Writer wrText;
+	
 	int count = 0;
 	HashSet<Long> users = null;
 
@@ -58,8 +59,9 @@ public class MyStatusListner implements StatusListener {
 	public void onStatus(Status status) {
 		// TODO Auto-generated method stub
 		Status temp = status.getRetweetedStatus();
+		
 		UserMentionEntity[] mention = status.getUserMentionEntities();
-		if (mention.length>0) {
+		if (false) {
 			for (UserMentionEntity ume : mention) {
 				//				if (users.contains(ume.getId())
 				//						& users.contains(status.getUser().getId())) {
@@ -96,14 +98,15 @@ public class MyStatusListner implements StatusListener {
 					}
 				}
 			}
-		} else if (temp != null) {
+		} 
+		if (temp != null) {
 			// if (users.contains(temp.getUser().getId())
 			// & users.contains(status.getUser().getId())) {
 
 			if(status.isRetweet()){
 				String line = (temp.getUser().getId() + ","
 						+ status.getUser().getId() + ","
-						+ status.getCreatedAt().getTime()/1000  + ",R, "+status.getId()+"\n");
+						+ status.getCreatedAt().getTime()/1000  + ",R, "+temp.getUser().getScreenName()+","+status.getUser().getScreenName()+","+status.getId()+","+status.getQuotedStatusId()+"\n");
 				String text=status.getId()+","+status.getText().replaceAll("\\s", " ")+"\n";
 				// System.out.print(line);
 				count++;
